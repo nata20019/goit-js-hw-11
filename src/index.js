@@ -1,19 +1,13 @@
-import axios from 'axios';
-import Notiflix, { Notify, Loading } from 'notiflix';
+import { Notify, Loading } from 'notiflix';
 // import { Loading } from 'notiflix/build/notiflix-loading-aio';
-
-// Описаний в документації
+import { fetchImages } from './pixabay';
 import SimpleLightbox from 'simplelightbox';
-// Додатковий імпорт стилів
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-
-const PIXABAY_KEY = '49707208-ae8e491fbb4cb60d419a5399f';
-const BASE_URL = 'https://pixabay.com/api/';
 
 const form = document.querySelector('.search-form');
 const galleryList = document.querySelector('.gallery');
@@ -158,11 +152,6 @@ async function onLoadMore() {
   }
 }
 
-function fetchImages(query, page = 1) {
-  return axios(
-    `${BASE_URL}?key=${PIXABAY_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`
-  );
-}
 fetchImages();
 
 function createMarkup(arr) {
