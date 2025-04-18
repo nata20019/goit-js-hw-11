@@ -22,10 +22,13 @@ async function onSearch(evt) {
   evt.preventDefault();
   searchQuery = evt.currentTarget.elements.searchQuery.value.trim();
   console.log(searchQuery);
+
   if (!searchQuery) {
     Notify.failure('Error! Please, type somerthing into input.');
     return;
   }
+  galleryList.innerHTML = '';
+  loadMoreBtn.setAttribute('hidden', true);
   Loading.dots();
   page = 1;
   // fetchImages(searchQuery, page)
@@ -77,12 +80,13 @@ async function onSearch(evt) {
     Notify.info(`Hooray! We found ${data.data.totalHits} images.`);
     galleryList.innerHTML = createMarkup(data.data.hits);
     lightbox.refresh();
-    if (page * 40 < data.data.totalHits) {
-      loadMoreBtn.removeAttribute('hidden');
-    } else {
-      loadMoreBtn.setAttribute('hidden', true);
-      Notify.info("We're sorry, but you've reached the end of search results.");
-    }
+    onConrtoll();
+    // if (page * 40 < data.data.totalHits) {
+    //   loadMoreBtn.removeAttribute('hidden');
+    // } else {
+    //   loadMoreBtn.setAttribute('hidden', true);
+    //   Notify.info("We're sorry, but you've reached the end of search results.");
+    // }
   } catch (error) {
     Notify.failure(`Something wrong ${e.message}`);
     galleryList.innerHTML = '';
@@ -95,7 +99,6 @@ async function onSearch(evt) {
 async function onLoadMore() {
   page += 1;
   Loading.dots();
-
   // fetchImages(searchQuery, page)
   //   .then(data => {
   //     console.log(data);
@@ -139,12 +142,13 @@ async function onLoadMore() {
       top: cardHeight * 2,
       behavior: 'smooth',
     });
-    if (page * 40 < data.data.totalHits) {
-      loadMoreBtn.removeAttribute('hidden');
-    } else {
-      loadMoreBtn.setAttribute('hidden', true);
-      Notify.info("We're sorry, but you've reached the end of search results.");
-    }
+    onConrtoll();
+    // if (page * 40 < data.data.totalHits) {
+    //   loadMoreBtn.removeAttribute('hidden');
+    // } else {
+    //   loadMoreBtn.setAttribute('hidden', true);
+    //   Notify.info("We're sorry, but you've reached the end of search results.");
+    // }
   } catch (error) {
     Notify.failure(`Something wrong ${e.message}`);
   } finally {
@@ -187,4 +191,13 @@ function createMarkup(arr) {
 </div>`
     )
     .join('');
+}
+
+function onConrtoll() {
+  if (page * 40 < data.data.totalHits) {
+    loadMoreBtn.removeAttribute('hidden');
+  } else {
+    loadMoreBtn.setAttribute('hidden', true);
+    Notify.info("We're sorry, but you've reached the end of search results.");
+  }
 }
