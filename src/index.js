@@ -14,9 +14,19 @@ const galleryList = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 let page = 1;
 let searchQuery = '';
+let totalHits = 0;
 
 form.addEventListener('submit', onSearch);
 loadMoreBtn.addEventListener('click', onLoadMore);
+
+function onConrtoll(data) {
+  if (page * 40 < data.data.totalHits) {
+    loadMoreBtn.removeAttribute('hidden');
+  } else {
+    loadMoreBtn.setAttribute('hidden', true);
+    Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+}
 
 async function onSearch(evt) {
   evt.preventDefault();
@@ -80,7 +90,8 @@ async function onSearch(evt) {
     Notify.info(`Hooray! We found ${data.data.totalHits} images.`);
     galleryList.innerHTML = createMarkup(data.data.hits);
     lightbox.refresh();
-    onConrtoll();
+    totalHits = data.data.totalHits;
+    onConrtoll(data);
     // if (page * 40 < data.data.totalHits) {
     //   loadMoreBtn.removeAttribute('hidden');
     // } else {
@@ -88,7 +99,7 @@ async function onSearch(evt) {
     //   Notify.info("We're sorry, but you've reached the end of search results.");
     // }
   } catch (error) {
-    Notify.failure(`Something wrong ${e.message}`);
+    Notify.failure(`Something wrong ${error.message}`);
     galleryList.innerHTML = '';
     loadMoreBtn.setAttribute('hidden', true);
   } finally {
@@ -142,7 +153,7 @@ async function onLoadMore() {
       top: cardHeight * 2,
       behavior: 'smooth',
     });
-    onConrtoll();
+    onConrtoll(data);
     // if (page * 40 < data.data.totalHits) {
     //   loadMoreBtn.removeAttribute('hidden');
     // } else {
@@ -150,7 +161,7 @@ async function onLoadMore() {
     //   Notify.info("We're sorry, but you've reached the end of search results.");
     // }
   } catch (error) {
-    Notify.failure(`Something wrong ${e.message}`);
+    Notify.failure(`Something wrong ${error.message}`);
   } finally {
     Loading.remove();
   }
@@ -191,13 +202,4 @@ function createMarkup(arr) {
 </div>`
     )
     .join('');
-}
-
-function onConrtoll() {
-  if (page * 40 < data.data.totalHits) {
-    loadMoreBtn.removeAttribute('hidden');
-  } else {
-    loadMoreBtn.setAttribute('hidden', true);
-    Notify.info("We're sorry, but you've reached the end of search results.");
-  }
 }
