@@ -36,6 +36,8 @@
 }
 
 .load-more {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
 }
+/* .load-more.is-hidden {
+  display: none;
+}  */
